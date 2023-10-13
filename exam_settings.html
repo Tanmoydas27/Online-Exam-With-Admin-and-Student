@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #ffffffa4; 
+            padding: 45px 30px;
+        }
+    </style>
+</head>
+<body onload="FeatchSelectSub(); ShowDetails();">
+    <div>
+        <h1 style="color: White; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 21%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_subject.html">Add Subjects</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_question.html">Add Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="view_question.html">View Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_student.html">Add Student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="exam_settings.html">Exam Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+
+    <div id="main-div">
+        <div id="div2">
+            <form  onsubmit="event.preventDefault(); AddExam()">
+                <table width="500" border="0" align="center" cellpadding="5">
+                    <div>
+                        <h2 style="margin-left: 300px;">Exam Details</h2>
+                        <hr/>
+                    </div>
+                    <tr>
+                        <td width="220">Subject Name:</td>
+                        <td width="350"><select style="width: 300px;padding: auto;" id="subject" name="subject"></select></td>
+                    </tr>
+                    <tr>
+                        <td width="220">Exam Date:</td>
+                        <td width="350"><input type="date" name="date" id="date" required="required"/></td>
+                    </tr>
+                    <tr>
+                        <td width="220">Duration(mins):</td>
+                        <td><input type="text" name="duration" id="duration" required="required"/></td>
+                    </tr>
+                    <tr>
+                        <td width="220">No Of Questions:</td>
+                        <td><input type="text" name="noOfQuestions" id="noOfQuestions" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td width="220">Password:</td>
+                        <td><input type="password" name="password" id="password" required="required"/></td>
+                    </tr>
+                    <tr>
+                        <td width="220">Retype Password:</td>
+                        <td><input type="password" name="rePassword" id="rePassword" required="required"/></td>
+                    </tr>
+                </table>
+                <hr/>
+                <div>
+                    <input type="submit" id="btnSubmit" name="btnSubmit" value="Add Exam" style="margin-left: 320px;"/>
+                </div>
+            </form>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div style="width: 100%;" >
+                <table style="width: 100%;" cellpaddin="5" cellspacing="5" border="0" align="center">
+                    <thead>
+                        <tr>   
+                            <th style="margin: 5px; background-color: #CCCCCC;" cellspacing="5">Exam No</th>
+                            <th style="margin: 5px; background-color: #CCCCCC;">Exam Date</th>
+                            <th style="margin: 5px; background-color: #CCCCCC;">Subject</th>
+                            <th style="margin: 5px; background-color: #CCCCCC;">Duration</th>
+                            <th style="margin: 5px; background-color: #CCCCCC;">No of Qtn</th>
+                            <th style="margin: 5px; background-color: #CCCCCC;">Action</th>
+                            <th style="margin: 5px; background-color: #CCCCCC;">Result</th> 
+                            <th style="margin: 5px; background-color: #CCCCCC;">Status</th>  
+                        </tr>
+                    </thead>
+                    <tbody id="tddisplay">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+
+    <script>
+        //Global Variable
+        var G_Examdate="";
+        var G_Subject="";
+        var G_Status="";
+        //Dsiplay Subject Slection
+        function FeatchSelectSub()
+        {
+            if(localStorage.getItem("subjects"))
+            {
+                var subjects = JSON.parse(localStorage.getItem("subjects"));
+                var i=0;
+                var temp;
+                for(i=0;i<subjects.length;i++)
+                {
+                    temp+="<option>"+subjects[i].subject+"</option>";
+                }
+                document.getElementById('subject').innerHTML=temp;
+            }
+        }
+
+        //Display the Exam List Table
+        function ShowDetails()
+        {
+            if(localStorage.getItem("exams"))
+            {
+                var exams=JSON.parse(localStorage.getItem("exams"));
+                var i=0;
+                var temp="";
+                for(i=0;i<exams.length;i++)
+                {
+                    temp+="<tr>"
+                    temp+="<td>"+(i+1)+"</td>";
+                    temp+="<td>"+exams[i].date+"</td>";
+                    temp+="<td>"+exams[i].subject+"</td>";
+                    temp+="<td>"+exams[i].duration+"</td>";
+                    temp+="<td>"+exams[i].noOfQuestions+"</td>";
+                    temp+="<td><a onclick='editExam(this)';>Edit </a> | <a onclick='deleteExam(this)';>  Delete</a></td>";
+                    temp+="<td><a onclick='viewResult()';>View Result</a></td>";
+                    if(CheckDateStatus(exams[i].date) == 0)
+                    {
+                        temp+="<td><a onclick='CheckStatus(this)'; id='statusid'>"+exams[i].status+"</a></td>";
+                    }
+                    temp+="</tr>"
+                }
+                document.getElementById('tddisplay').innerHTML=temp;
+            }
+        }
+
+        //Addding Exam Details
+        function AddExam()
+        {
+            var SubjectName =document.getElementById('subject').value;
+            var ExamDate = document.getElementById('date').value;
+            var Duration = document.getElementById('duration').value;
+            var NoOfQuestions = document.getElementById('noOfQuestions').value;
+            var Password = document.getElementById('password').value;
+            var Confirm_Password = document.getElementById('rePassword').value;
+            var BtnName = document.getElementById('btnSubmit').value;
+            G_Status="Activate";
+            var ExamDetails ={"subject":SubjectName,"date":ExamDate,"duration":Duration,"noOfQuestions":NoOfQuestions,"password":Password,"status":G_Status};
+
+            if(Password == Confirm_Password)
+            {
+                if(BtnName == "Add Exam")
+                {
+                    if(localStorage.getItem("exams"))
+                    {
+                        var exams = JSON.parse(localStorage.getItem("exams"));
+                        if(ExamFound(ExamDate, SubjectName) == 0)
+                        {
+                            exams.push(ExamDetails);
+                            localStorage.setItem("exams",JSON.stringify(exams));
+                            alert("Exam Added Successfully");
+                        }
+                        else
+                        {
+                            alert("Already Exist");
+                        }
+                    }
+                    else
+                    {
+                        var exams =[];
+                        exams.push(ExamDetails);
+                        localStorage.setItem("exams",JSON.stringify(exams));
+                        alert("Exam Added Successfully");
+                    }
+                    
+                    window.location.href="";
+                }
+                else
+                {
+                    
+                    if(localStorage.getItem("exams"))
+                    {
+                        var exams = JSON.parse(localStorage.getItem("exams"));
+                        var i=0;
+
+                        if(ExamFound(ExamDate, SubjectName) == 0)
+                        {
+                            alert("1");
+                            for(i=0;i<exams.length;i++)
+                            {
+                                if(G_Examdate == ExamDate && G_Subject == SubjectName)
+                                {
+                                    exams[i].date =ExamDate;
+                                    exams[i].subject =SubjectName;
+                                    exams[i].duration = Duration;
+                                    exams[i].noOfQuestions =NoOfQuestions;
+                                    exams[i].password = Password;
+                                }
+                            }
+                            localStorage.setItem("exams",JSON.stringify(exams));
+                            alert("Exam Updated Successfully");
+                            window.location.href="";
+                        }
+                        else
+                        {
+                            alert('Same Exam Exist');
+                        }
+                    }
+                }
+                
+            }
+            else
+            {
+                alert("Password Not Match.")
+            }
+        }
+
+        function editExam(editBtn)
+        {
+            mytr = editBtn.parentElement.parentElement;
+            var ExamDate =mytr.getElementsByTagName("td")[1].innerHTML;
+            var SubjectName =mytr.getElementsByTagName("td")[2].innerHTML;
+           var Duration = mytr.getElementsByTagName("td")[3].innerHTML;
+            var NoOfQuestions =mytr.getElementsByTagName("td")[4].innerHTML;
+            document.getElementById('date').value =ExamDate;
+            document.getElementById('subject').value=SubjectName;
+            document.getElementById('duration').value=Duration;
+            document.getElementById('noOfQuestions').value=NoOfQuestions;
+            document.getElementById('password').value =CheckPassword(ExamDate,SubjectName);
+            document.getElementById('rePassword').value =CheckPassword(ExamDate,SubjectName);
+            
+            document.getElementById('btnSubmit').value="Update Exam";
+
+            G_Examdate = ExamDate;
+            G_Subject = SubjectName;
+
+        }
+
+        function deleteExam(deleteBtn)
+        {
+            if(confirm("Are You Sure Want to Delete The Exam..?"))
+            {
+                var mytr =deleteBtn.parentElement.parentElement;
+                var ExamDate =mytr.getElementsByTagName("td")[1].innerHTML;
+                var SubjectName =mytr.getElementsByTagName("td")[2].innerHTML;
+                if(localStorage.getItem("exams"))
+                {
+                    var exams = JSON.parse(localStorage.getItem("exams"));
+                    var i=0;
+                    var temp=[];
+                    for(i=0;i<exams.length;i++)
+                    {
+                        
+                        if(!(exams[i].subject.toLowerCase() == SubjectName.toLowerCase() && exams[i].date == ExamDate))
+                        {
+                        
+                            //alert("hello");
+                            temp.push(exams[i]);  
+                        }
+                    }
+                    localStorage.setItem("exams",JSON.stringify(temp));
+                    alert("Exam Delete Successfully");
+                    window.location.href="";
+                }
+                
+            }
+            
+
+
+            
+        }
+        //Check Password For Edit
+        function CheckPassword(ExamDate,SubjectName)
+        {
+            var exams =JSON.parse(localStorage.getItem("exams"));
+            var i=0;
+
+            for(i=0;i<exams.length;i++)
+            {
+                if(exams[i].date == ExamDate && exams[i].subject == SubjectName)
+                {
+                    return exams[i].password;
+                }
+            }
+        }
+
+        //Status Changing
+
+        function CheckStatus(status)
+        {
+            var mytr=status.parentElement.parentElement;
+            var ExamDate = mytr.getElementsByTagName("td")[1].innerHTML;
+            var SubjectName=mytr.getElementsByTagName("td")[2].innerHTML;
+            var Status = mytr.getElementsByTagName("a")[3].innerHTML;
+            G_Status=Status;
+            var exams =JSON.parse(localStorage.getItem("exams"));
+            var i=0;
+            var temp="";
+            for(i=0;i<exams.length;i++)
+            {
+                if(exams[i].date === ExamDate && exams[i].subject === SubjectName)
+                {
+                    if(Status == "Activate")
+                    {
+                        temp="Deactivate";
+                        exams[i].status=temp;
+                    }
+                    else if(Status =="Deactivate")
+                    {
+                        temp="Activate";
+                        exams[i].status=temp;
+                    }
+                    else
+                    {
+                        alert("Expire");
+                    }
+                }
+            }  
+            localStorage.setItem("exams",JSON.stringify(exams));
+            window.location.href="";
+        }
+
+        //Cheking Date With Current Date
+        function CheckDateStatus(date)
+        {
+            var today = new Date();
+            var ExamDate = new Date(date);
+            if(today.getDate() == ExamDate.getDate())
+            {
+                return 0;
+            }
+            else if(today.getDate() > ExamDate.getDate())
+            {
+                return 1;
+            }
+            return 2;
+        }
+
+        //Checking Localhost Exam Already Exist or Not in Same day
+         function ExamFound(ExamDate, SubjectName)
+         {
+            var exams = JSON.parse(localStorage.getItem("exams"));
+            var i=0;
+            for(i=0;i<exams.length;i++)
+            {
+                if(exams[i].date == ExamDate && exams[i].subject == SubjectName)
+                {
+                    return 1;
+                }
+            }
+            return 0;
+         }
+    </script>
+</body>
+</html>

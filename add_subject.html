@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin-login-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #ffffffa4; 
+            padding: 45px 30px;
+        }
+    </style>
+</head>
+<body onload="display();">
+    <div>
+        <h1 style="color: White; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 21%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_subject.html">Add Subjects</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_question.html">Add Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="view_question.html">View Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_student.html">Add Student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="exam_settings.html">Exam Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+
+    <div id="main-div">
+        <div id="div2">
+            <form onsubmit="event.preventDefault(); AddSubject();">
+                <table width="416" border="0" cellpadding="5" align="center">
+                    <div style="margin-left: 300px;">
+                        <h2>Add Subject</h2>
+                    </div>
+                    <hr>
+                    <tr>
+                        <td width="216">Subject Name :</td>
+                        <td width="358"><input type="text" name="subject" id="subject" /></td>
+                    </tr>              
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><input type="submit" name="btnAddSub" id="btnAddSub" value="Add Subject" /></td>
+                    </tr>
+                </table>
+            </form>
+
+            <br>
+            <br>
+            <div>
+                <p id="display"></p>
+            </div>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!--Copyright --> 
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2023 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+    <script>
+        var G_SubjectName="";
+        
+        // Check Wheather the Subject Is Already In Localhost Or Not
+        function CheckSubject(Subject_Name)
+        {
+            if(localStorage.getItem("subjects"))
+            {
+                var subjects =JSON.parse(localStorage.getItem("subjects"));
+                var i=0;
+                for(i=0;i<subjects.length;i++)
+                {
+                    var s=subjects[i].subject;
+                    if(s.toLowerCase() == Subject_Name.toLowerCase())
+                    {
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+        }
+
+        function AddSubject()
+        {
+            var Subject_Name=document.getElementById("subject").value;
+            var BtnName = document.getElementById('btnAddSub').value;
+            var subjectDetails ={"subject":Subject_Name};
+            if(BtnName == "Add Subject")
+            {
+                alert("add");
+                if(localStorage.getItem("subjects"))
+                {
+                    var subjects = JSON.parse(localStorage.getItem("subjects"));
+                    if(CheckSubject(Subject_Name) === 0)
+                    {
+                        subjects.push(subjectDetails);
+                        localStorage.setItem("subjects",JSON.stringify(subjects));
+                        alert("Subject Add Successfully.");
+                    }
+                    else
+                    {
+                        alert("Subject Already Exist.");
+                    }
+                    
+                }
+                else
+                {
+                    var subjects=[];
+                    subjects.push(subjectDetails);
+                    localStorage.setItem("subjects",JSON.stringify(subjects));
+                    alert("Subject Add Successfully.");
+                }
+                
+                window.location.href=" ";
+            
+            }
+            else
+            {
+                alert('update');
+                if(localStorage.getItem("subjects"))
+                {
+                    var subjects = JSON.parse(localStorage.getItem("subjects"));
+                    var i=0;
+                    if(CheckSubject(Subject_Name) === 0)
+                    {
+                        for(i=0;i<subjects.length;i++)
+                        {
+                            
+                            if(subjects[i].subject == G_SubjectName)
+                            {
+                                subjects[i].subject = Subject_Name;
+                            }
+                        }
+                        localStorage.setItem("subjects",JSON.stringify(subjects));
+                        document.getElementById('btnAddSub').innerHTML="Add Subject";
+                        alert('Update Successfully');
+                    }
+                    else
+                    {
+                        alert("Subject Already Exist.");
+                    }
+                    
+                  
+                    window.location.href=" ";
+
+                }
+            }
+        }
+
+        function display()
+        {
+            if(localStorage.getItem("subjects"))
+            {
+                var subjects = JSON.parse(localStorage.getItem("subjects"));
+                var i=0;
+                var temp="<table width='416' border=0' align='center'>";
+                temp+="<tr><th>Subject No</th><th>Subject Name</th><th colspan='2' cellpadding='5'>Action</th><tr>";
+                for(i=0;i<subjects.length;i++)
+                {
+                    temp+="<tr>";
+                    temp+="<td>"+(i+1)+"</td>";
+                    temp+="<td>"+subjects[i].subject+"</td>";
+                    temp+="<td><a onclick='editSubject(this)';>Edit</a>  |  <a onclick='delete1(this)';>  Delete</a></td>";
+                    temp+="</tr>";
+                }
+                temp+="</table>";
+                document.getElementById('display').innerHTML=temp;
+            }
+        }
+
+        function delete1(delete1)
+        {
+            if(confirm("Are u sure to delete this Subjects?"))
+            {
+                var mytr =delete1.parentElement.parentElement;
+                var s_name =mytr.getElementsByTagName("td")[1].innerHTML;
+
+                var subjects = JSON.parse(localStorage.getItem("subjects"));
+                var i=0;
+                var temp=[];
+                for(i=0;i<subjects.length;i++)
+                {
+                    if(subjects[i].subject != s_name)
+                    {
+                        temp.push(subjects[i]);
+                    }
+                }
+                localStorage.setItem("subjects",JSON.stringify(temp));
+                window.location.href=" ";
+            }
+        }
+
+        function editSubject(edit)
+        {
+            mytr = edit.parentElement.parentElement;
+            var s_name = mytr.getElementsByTagName("td")[1].innerHTML;
+
+            document.getElementById('subject').value =s_name;
+
+            document.getElementById('btnAddSub').value="Update Subject";
+
+            G_SubjectName = s_name;
+        }
+    </script>
+</body>
+</html>

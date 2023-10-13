@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #ffffffe1; 
+            padding: 45px 30px;
+        }
+        .showquestion  th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body onload="displaySelect();">
+    <div>
+        <h1 style="color: White; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 20%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_subject.html">Add Subjects</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_question.html">Add Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="view_question.html">View Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_student.html">Add Student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="exam_settings.html">Exam Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+
+    <!--edit Section-->
+
+    <div id="main-div">
+        <div id="div2">
+            <form onsubmit="event.preventDefault(); showAll();">
+                <table style="width: 550; border: 0; text-align: center;" cellpadding="10">
+                    <tr >
+                        <td style="width: 216;">Subject Name</td>
+                        <td style="width: 216;">
+                            <select style='width:420px;height:30px;' id="selectid">
+                            </select>
+                        </td>
+                        <td>
+                        	<input name="searchBtn" type="submit" id="searcBtn" value="Search" />
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+            <!--Showing All Questiond & Answers-->
+            <div id="display"></div>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+
+    <script>
+        function displaySelect()
+        {
+            if(localStorage.getItem("subjects"))
+            {
+                var subjects = JSON.parse(localStorage.getItem("subjects"));
+                var i=0;
+                var temp;
+                for(i=0;i<subjects.length;i++)
+                {
+                    temp+="<option>"+subjects[i].subject+"</option>";
+                }
+                document.getElementById('selectid').innerHTML=temp;
+            }
+        }
+
+        function showAll()
+        {
+            var Subject_Name= document.getElementById('selectid').value;
+            if(localStorage.getItem("questions"))
+            {
+                var questions =JSON.parse(localStorage.getItem("questions"));
+                var i=0;
+                var flag=0;
+                temp="<table class='showquestion'>";
+                temp+="<div style='margin-left: 300px;'><h2>Question </h2></div>";
+                temp+="<hr/>";
+                temp+="<tr><th width='50'>Question No</th><th width='102'>Question</th><th width='138'>Option 1</th><th  width='138'>Option 2</th><th width='138'>Option 3</th><th width='140'>Option 4</th><th width='50'>Answer</th><th width='40'>Action</th>";
+                for(i=0;i<questions.length;i++)
+                {
+                    
+                    if(questions[i].selectid == Subject_Name)
+                    {     
+                        flag++;               
+                        temp+="<tr>";
+                        temp+="<td>"+(i+1)+"</td>";
+                        temp+="<td>"+questions[i].question+"</td>";
+                        temp+="<td>"+questions[i].option1+"</td>";
+                        temp+="<td>"+questions[i].option2+"</td>";
+                        temp+="<td>"+questions[i].option3+"</td>";
+                        temp+="<td>"+questions[i].option4+"</td>";
+                        temp+="<td>"+questions[i].answer+"</td>";
+                        temp+="<td onclick='delete1(this)';><a>Delete</a></td>";
+                        temp+="</tr>";
+                    }
+                }
+                temp+="</table>";
+                if(flag <= 0)
+                {
+                    document.getElementById('display').innerHTML="<div  style='text-align:center'>No records Found</div>";
+                }
+                else{
+                    document.getElementById('display').innerHTML=temp;
+                }
+            }
+        }
+
+        function delete1(deleteBtn)
+        {
+            if(confirm("Are You Sure Want to Delete The Exam..?"))
+            {
+                var mytr =deleteBtn.parentElement.parentElement;
+                var Question =mytr.getElementsByTagName("td")[1].innerHTML;
+                var option1 = mytr.getElementsByTagName("td")[2].innerHTML;
+                var option2 = mytr.getElementsByTagName("td")[3].innerHTML;
+                var option3 = mytr.getElementsByTagName("td")[4].innerHTML;
+                var option4 = mytr.getElementsByTagName("td")[5].innerHTML;
+                var Answer =mytr.getElementsByTagName("td")[6].innerHTML;
+
+
+                if(localStorage.getItem("questions"))
+                {
+                    var questions = JSON.parse(localStorage.getItem("questions"));
+                    var i=0;
+                    var temp=[];
+                    for(i=0;i<questions.length;i++)
+                    {
+                        
+                        if(questions[i].question != Question )
+                        {
+                        
+
+                            temp.push(questions[i]);  
+                        }
+                    }
+                    localStorage.setItem("questions",JSON.stringify(temp));
+                    alert("Exam Delete Successfully");
+                    window.location.href="";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

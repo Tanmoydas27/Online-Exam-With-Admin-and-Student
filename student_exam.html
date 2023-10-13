@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>student-exam-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #fff; 
+            padding: 45px 30px;
+            height: 520px;;
+        }
+        #div3{
+            clear: both;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body onload="FeatchStudent();load_question();CountDown()">
+    <div>
+        <h1 style="color: White; width: 20%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 40%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Exam</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+    <div id="main-div">
+        <div  id="div2">
+            <h2><span id="studentname"></span> Exam Started!</h2>
+            <div style="text-align: right; width: 100%;" ><h1 id="countdown" style="font-size: larger;"></h1></div>
+            
+            <br>
+            <br>
+            <hr/>
+            <div style="width: 100%; height: 200px;">
+                <h3>Q <span id="qno"></span>. <span id="ques"></span></h3>
+                <ol type="A" style="font-size: 20px;">
+                    <li><input type="radio" name="op" id="ans1" >  <span id="op1"></span></li>
+                    <li><input type="radio" name="op" id="ans2">   <span id="op2"></span></li>
+                    <li><input type="radio" name="op" id="ans3">   <span id="op3"></span></li>
+                    <li><input type="radio" name="op" id="ans4">   <span id="op4"></span></li>
+            </ol>
+            </div>
+            <br>
+            <br>
+            <div style="width: 100%; margin-left: 35%;">
+                <button  style="float: left; margin-right: 20px;" type="button" class="btn btn-outline-primary" onclick="prevQuestion()" id="btnPrev"> Previous</button>
+                <button style="float: left; margin-left: 40px;" type="button" class="btn btn-outline-secondary" onclick="nextQuestion()" id="btnNext">Next</button>
+                <button style="float: left; margin-left: 380px;" type="button" class="btn btn-success"id="btnSubmit" onclick="SubmitBtn()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+
+    <script>
+        
+        var G_ExaminationDate ="";
+        var G_ExaminationSubject="";
+        var G_ExamsDuration=0;
+        var G_ExamsQuestionlimit=0;
+        var G_StudentName="";
+        var G_StudentRollNo=0;
+        function FeatchStudent()
+        {
+            var ExaminationDate="";
+            var ExaminationSubject="";
+            var StudentName="";
+            var StudentRollNo =0;
+            if(localStorage.getItem("examination"))
+            {
+                var examination =JSON.parse(localStorage.getItem("examination"));
+
+                var i=0;
+                var today= new Date();
+                for(i=0;i<examination.length;i++)
+                {
+                    var Examdate= new Date(examination[i].examDate);
+                    if(today.getDate() == Examdate.getDate())
+                    {
+                        ExaminationDate =examination[i].examDate;
+                        ExaminationSubject=examination[i].subject;
+                        StudentName=examination[i].student;
+                        StudentRollNo=examination[i].rollno;
+                        document.getElementById('studentname').innerHTML=StudentName;
+                    }
+                }
+            }
+            G_ExaminationDate = ExaminationDate;
+            G_ExaminationSubject =ExaminationSubject;
+            G_StudentName = StudentName;
+            G_StudentRollNo = StudentRollNo;
+        }
+
+        // function FeatchExam()
+        // {
+        //     if(localStorage.getItem("questions"))
+        //     {
+        //         var questions =JSON.parse(localStorage.getItem("questions"));
+        //         var i=0;
+        //         var temp="";
+        //         for(i=0;i<questions.length;i++)
+        //         {
+                    
+        //             if(G_ExaminationSubject == questions[i].selectid)
+        //             {
+        //                 temp+="<h2"
+        //             }
+        //         }
+        //         document.getElementById('showQuestions').innerHTML = temp;
+        //     }
+        // }
+
+        function CountDown()
+        {
+            var addTime=G_ExamsDuration;
+            var currentDate = new Date();
+            var twentyMinutesLater = new Date(currentDate.getTime() + (addTime*60*1000));
+            var countDownDate = new Date(twentyMinutesLater).getTime();
+
+            var Interver = setInterval(function()
+            {
+                var presentTime= new Date().getTime();
+
+                var countDown = countDownDate - presentTime;
+
+                var hours = Math.floor((countDown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((countDown % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((countDown % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown").innerHTML =  hours + "Hours  "
+                + minutes + " Minutes " + seconds + "Seconds ";
+
+
+                if(countDown < 0)
+                {
+                    clearInterval(CountDown);
+                    document.getElementById("countdown").innerHTML  ="Expired";
+                    window.location.href="exam_expire.html";
+                }
+            },1000);
+        }
+
+        function GetExamDetails()
+        {
+            var ExamsDuration=0;
+            var ExamsQuestionlimit=0;
+
+            if(localStorage.getItem("exams"))
+            {
+                var exams = JSON.parse(localStorage.getItem("exams"));
+                var i=0;
+                for(i=0;i<exams.length;i++)
+                {
+
+                    var Subject =exams[i].subject;
+                    if(Subject.toLowerCase() == G_ExaminationSubject.toLocaleLowerCase() && exams[i].date == G_ExaminationDate)
+                    {
+                        ExamsDuration = exams[i].duration;
+                        ExamsQuestionlimit = exams[i].noOfQuestions;
+                    }
+                }
+            }
+            G_ExamsDuration=ExamsDuration;
+            G_ExamsQuestionlimit=ExamsQuestionlimit;
+        }
+
+
+
+        var uans_list = ["", "", "", "",""];
+        var temp = [];
+        var j=0;
+        var qno = document.getElementById('qno');
+        var ques = document.getElementById('ques');
+        var op1 = document.getElementById('op1');
+        var op2 = document.getElementById('op2');
+        var op3 = document.getElementById('op3');
+        var op4 =document.getElementById('op4');
+        var BtnPrevious = document.getElementById('btnPrev');
+        var BtnNext = document.getElementById('btnNext');
+        var BtnSubmit =document.getElementById('btnSubmit');
+        var Ans1 =document.getElementById('ans1');
+        var Ans2 = document.getElementById('ans2');
+        var Ans3 = document.getElementById('ans3');
+        var Ans4 =document.getElementById('ans4');
+
+
+        function load_question()
+        {
+            GetExamDetails();
+            var i = 1;
+            if(localStorage.getItem("questions"))
+            {
+                var k=0,x=0;
+                var questions =JSON.parse(localStorage.getItem("questions"));
+                for(k=0;k<questions.length;k++)
+                {
+                    var subject=questions[k].selectid;
+                    if(subject.toLowerCase() == G_ExaminationSubject.toLowerCase())
+                    {
+                        temp.push(questions[k]);
+                        if(i==G_ExamsQuestionlimit)
+                        {
+                            break;
+                        }
+                        
+                        i++;
+                    }
+                    
+                }
+            }
+            display();
+        }
+
+        function display()
+        {
+
+            Ans1.checked = false;
+            Ans2.checked = false;
+            Ans3.checked = false;
+            Ans4.checked = false;
+
+            if(uans_list[j] !="")
+            {
+                if(uans_list[j] == "a")
+                {
+                    Ans1.checked = true;
+                }
+                else if(uans_list[j] == "b")
+                {
+                    Ans2.checked = true;
+                }
+                else if(uans_list[j] == "c")
+                {
+                    Ans3.checked = true;
+                }
+                else if(uans_list[j] == "d")
+                {
+                    Ans4.checked = true;
+                }
+            }
+
+            if(j==0)
+            {
+                BtnPrevious.style.display = 'none';
+            }
+            else{
+                BtnPrevious.style.display = 'block';
+            }
+            if(j==temp.length-1)
+            {
+                
+               BtnNext.style.display='none';
+               BtnSubmit.style.display ='block';
+
+            }
+            else
+            {
+                BtnNext.style.display = 'block';
+                BtnSubmit.style.display='none';
+            }
+            qno.innerHTML=j+1;
+            ques.innerHTML=temp[j].question;
+            op1.innerHTML=temp[j].option1;
+            op2.innerHTML=temp[j].option2;
+            op3.innerHTML=temp[j].option3;
+            op4.innerHTML=temp[j].option4;
+
+            
+        }
+
+        function nextQuestion()
+        {
+            store_ans();
+            j = j + 1;
+            display();
+        }
+        function prevQuestion()
+        {
+            j=j-1;
+            display();
+        }
+
+        function SubmitBtn()
+        {
+            store_ans();
+            var marks = 0;
+            var i=0;
+            var x=0
+            if(localStorage.getItem("questions"))
+            {
+                var questions =JSON.parse(localStorage.getItem("questions"));
+                
+                for(x=0;x<=questions.length;x++)
+                {
+                    var subject=questions[x].selectid;
+                    if(subject.toLowerCase() == G_ExaminationSubject.toLowerCase())
+                    {
+                        // alert(questions[x]);
+                       
+                        temp.push(questions[x]);
+                        console.log(temp[x]);
+                        if(temp[x].answer == uans_list[x])
+                        {
+                            marks+= 1;
+                        }
+                        if(i==G_ExamsQuestionlimit)
+                        {
+                            break;
+                        }
+                        i++;
+                    }
+
+                    
+                }
+            }
+
+            if(localStorage.getItem("examination"))
+            {
+                var examination = JSON.parse(localStorage.getItem("examination"));
+                var m=0;
+                for(m=0;m<examination.length;m++)
+                {
+                    var ResultSubject = examination[m].subject;
+                    if(ResultSubject.toLowerCase() == G_ExaminationSubject.toLocaleLowerCase() && examination[m].examDate == G_ExaminationDate && examination[m].rollno == G_StudentRollNo)
+                    {
+                        examination[m].rollno=G_StudentRollNo;
+                        examination[m].examDate=G_ExaminationDate;
+                        examination[m].student = G_StudentName;
+                        examination[m].subject = G_ExaminationSubject;
+                        examination[m].result = marks;
+                    }
+                }
+                localStorage.setItem("examination",JSON.stringify(examination));
+                if(confirm("Are You Sure Want To Submit The Exam???"))
+                {
+                    alert("Submitted Successfully.. You are Loging out.......");
+                    window.location.href="student_login.html";
+                }
+
+            }
+            document.getElementById('print').style.display='block';
+            document.getElementById('printAns').innerHTML=marks;
+            document.getElementById('btnSubmit').style.display='none';
+            document.getElementById('btnNext').style.display='none';
+            document.getElementById('btnLogout').style.display='block';
+        }
+        function store_ans()
+        {
+            var uans = "";
+
+            if(Ans1.checked == true)
+            {
+                uans ="a";
+            }
+            else if(Ans2.checked == true)
+            {
+                uans ="b";
+            }
+            else if(Ans3.checked == true)
+            {
+                uans ="c";
+            }
+            else if(Ans4.checked == true)
+            {
+                uans ="d";
+            }
+            uans_list[j] = uans;
+        }
+
+    </script>
+</body>
+</html>
+

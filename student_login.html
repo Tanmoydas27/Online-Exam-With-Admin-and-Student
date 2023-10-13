@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>student-login-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #fff; 
+            padding: 45px 30px;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <h1 style="color: White; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 40%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+    <div id="main-div">
+        <div  id="div2">
+            <form onsubmit="event.preventDefault(); login();">
+                <table width="416" border="0" cellpadding="5" align="center" >
+                    <div style="margin-left: 300px;">
+                        <h2>Student Login</h2>
+                    </div>
+                    <hr/>
+                   <tr>
+                     <td width="216"> RollNo:</td>
+                     <td width="358"><input type="text" name="rollno" id="rollno" required="required" /></td>
+                   </tr>
+                   <tr>
+                    <td width="216">Subject Name:</td>
+                    <td width="358"><input type="text" name="subject" id="subject" required="required"/></td>
+                  </tr>
+                   <tr>
+                     <td>Password</td>
+                     <td><input type="password" name="password" id="password" required="required"/></td>
+                   </tr>
+                   <tr>
+                     <td>&nbsp;</td>
+                     <td><input type="submit" name="btnLogin" id="btnLogin" value="Login" /></td>
+                   </tr>
+                </table>
+                
+            </form>
+            <br>
+            <br>
+            <div style="margin-left: 300px;"><a href="admin_login.html">Admin Login</a></div>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+
+    <script>
+        function login()
+        {
+            var RollNo = document.getElementById("rollno").value;
+            var SubjectName = document.getElementById("subject").value;
+            var Password = document.getElementById("password").value;
+            var G_StartCount=0;
+            if(localStorage.getItem("exams"))
+            {
+                var exams =JSON.parse(localStorage.getItem("exams"));
+                let i=0;
+                var flag=0;
+                for(i=0;i<exams.length;i++)
+                {
+                    var ExamDate = exams[i].date;
+                    if(CheckDateStatus(ExamDate) == 0 && exams[i].subject.toLowerCase() == SubjectName.toLowerCase() && exams[i].password == Password)
+                    {
+                        flag++;
+                        if(exams[i].status == "Activate")
+                        {
+                            alert("Exam Found But  Not Active. Please Wait For Admin's  Activation...");
+                        }
+                        else
+                        {
+                             
+                            if(SearchStudent(RollNo,SubjectName) == 0)
+                            {
+                                var StudentName =SearchStudentName(RollNo,SubjectName);
+                                var Result=0;
+
+                                G_StartCount=0;
+                                var StudentExamsResults={"rollno":RollNo,"subject":SubjectName,"student":StudentName,"result":Result,"examDate":ExamDate,"StartCount":G_StartCount};
+                                if(localStorage.getItem("examination"))
+                                {
+                                    var examination =JSON.parse(localStorage.getItem("examination"));
+                                    if(CheckExamination(RollNo, SubjectName, ExamDate, StudentName) == 1)
+                                    {
+                                        examination.push(StudentExamsResults);
+                                        localStorage.setItem("examination",JSON.stringify(examination));
+                                        alert("Success");
+                                        window.location.href="student_instruction.html";
+                                    }
+                                    else
+                                    {
+                                        alert("Exam Aleady Completed");
+                                        
+
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    var examination =[];
+                                    examination.push(StudentExamsResults);
+                                    localStorage.setItem("examination",JSON.stringify(examination));
+                                    alert("Success");
+                                    window.location.href="student_instruction.html";
+                                }
+                                
+                            }
+                            else
+                            {
+                                alert("Student Not Exist.");
+                            }
+                            
+                        }
+                        
+                        
+                    }
+                }
+                if(flag == 0 )
+                {
+                    alert("Exam Not Found");
+                    window.location.href="";
+                }
+                
+            }
+        }
+
+        function CheckDateStatus(date)
+        {
+            var today = new Date();
+            ExamDate = new Date(date);
+            if(today.getDate() == ExamDate.getDate())
+            {
+                return 0;
+            }
+            return 1;
+        }
+         
+        function SearchStudent(RollNo,SubjectName)
+        {
+            var students =JSON.parse(localStorage.getItem("students"));
+            var i=0;
+            for(i=0;i<students.length;i++)
+            {
+                roll =students[i].rollno;
+                course =students[i].course;
+                if( roll == RollNo && course.toLowerCase() == SubjectName.toLowerCase())
+                {
+                    return 0;
+                }
+            }
+            return 1;
+        }
+        function SearchStudentName(RollNo,SubjectName)
+        {
+            var students =JSON.parse(localStorage.getItem("students"));
+            var i=0;
+            for(i=0;i<students.length;i++)
+            {
+                roll =students[i].rollno;
+                course =students[i].course;
+                if( roll == RollNo && course.toLowerCase() == SubjectName.toLowerCase())
+                {
+                    return students[i].studentName;
+                }
+            }
+            return 1;
+        }
+
+        function CheckExamination(RollNo, SubjectName, ExamDate, StudentName)
+        {
+            if(localStorage.getItem("examination"))
+            {
+                var examination = JSON.parse(localStorage.getItem("examination"));
+                var i=0;
+                var flag=0;
+        
+                for(i=0;i<examination.length;i++)
+                {
+                    if(examination[i].rollno == RollNo && examination[i].examDate == ExamDate && examination[i].subject == SubjectName && examination[i].student== StudentName)
+                    {
+                        flag++;
+                    }
+                }
+                if(flag > 0)
+                {
+                    return 0;
+                }
+            }
+            return 1;
+        }
+    </script>
+</body>
+</html>

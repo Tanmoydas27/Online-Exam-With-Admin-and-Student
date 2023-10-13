@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin-login-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #fff; 
+            padding: 45px 30px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1 style="color: White;background-color: blue; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand bg-dark">
+            <div style="width: 100%; margin-left: 40%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+    <div id="main-div">
+        <div id="div2">
+            <form onsubmit="event.preventDefault(); register();">
+                <table width="416" border="0" cellpadding="5" align="center" >
+                    <div style="margin-left: 300px;">
+                        <h2>Admin Register</h2>
+                    </div>
+                    <hr/>
+                   <tr>
+                     <td width="216">Admin ID</td>
+                     <td width="358"><input type="text" name="adminid" id="adminid" placeholder="Enter Admin Id" /></td>
+                   </tr>
+                   <tr>
+                     <td>Password</td>
+                     <td><input type="password" name="password" id="password" placeholder="Enter Password" /></td>
+                   </tr>
+                   <tr>
+                    <td> Confirm Password</td>
+                    <td><input type="password" name="coonfpassword" id="confpassword" placeholder="Confirm Password"/></td>
+                  </tr>
+                   <tr>
+                     <td>&nbsp;</td>
+                     <td><input type="submit" name="btnLogin" id="btnregister" value="Register" /></td>
+                   </tr>
+                   <tr>
+                    <td>&nbsp;</td>
+                    <td><p>Registered Already?<a href="admin_login.html">Login Now!</a></p></td>
+                   </tr>
+                   
+                   
+                </table>
+                
+            </form>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="http">EXCLUSIVE</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+    <script>
+        function register()
+        {
+            var Admin_ID =document.getElementById('adminid').value;
+            var Password = document.getElementById("password").value;
+            var Conf_Password = document.getElementById("confpassword").value;
+            var userDetails ={"adminid":Admin_ID,"password":Password};
+            if(Password == Conf_Password)
+            {
+                if(localStorage.getItem("users"))
+                {
+                    var users = JSON.parse(localStorage.getItem("users"));
+                    users.push(userDetails);
+                    localStorage.setItem("users",JSON.stringify(users));
+                }
+                else
+                {
+                    var users =[];
+                    users.push(userDetails);
+                    localStorage.setItem("users",JSON.stringify(users));
+                }
+                alert("Registered Successful.");
+                window.location.href="admin_login.html";
+            }
+            else
+            {
+                alert("Password And Confirm Password Are Not Different.")
+            }
+
+        }
+    </script>
+</body>
+</html>

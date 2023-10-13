@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #ffffffe1; 
+            padding: 45px 30px;
+        }
+    </style>
+</head>
+<body onload="display1();">
+    <div>
+        <h1 style="color: White; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 30%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_subject.html">Add Subjects</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="add_question.html">Add Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="view_question.html">View Question</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_student.html">Add Student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="exam_settings.html">Exam Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+
+    <!--edit Section-->
+
+    <div id="main-div">
+        <div id="div2">
+            <form onsubmit="event.preventDefault(); AddQues();">
+                <table width="416" border="0" cellpadding="5" align="center" >
+                    <div style="margin-left: 300px;">
+                        <h2>Add Question</h2>
+                    </div>
+                    <hr>
+                    <tr>
+                        <td style="width: 216;">Subject Name</td>
+                        <td style="width: 216;" >
+                            <select style='width:420px;height:30px;' id="selectid">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Question</td>
+                        <td><textarea name="Question",cols="50" rows="3" id="question"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Option 1</td>
+                        <td><textarea name="option1",cols="50" rows="3" id="option1"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Option 2</td>
+                        <td><textarea name="option2",cols="50" rows="3" id="option2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Option 3</td>
+                        <td><textarea name="option3",cols="50" rows="3" id="option3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Option 4</td>
+                        <td><textarea name="option4",cols="50" rows="3" id="option4"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Answer:</td>
+                        <td>
+                            <select name="answer" id="answer" style="width:100px;height:30px;">
+                                <option>a</option>
+                                <option>b</option>
+                                <option>c</option>
+                                <option>d</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><input type="submit" name="" id="" value="Add Question" /></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+
+    <script>
+        function display1()
+        {
+            if(localStorage.getItem("subjects"))
+            {
+                var subjects = JSON.parse(localStorage.getItem("subjects"));
+                var i=0;
+                var temp;
+                for(i=0;i<subjects.length;i++)
+                {
+                    temp+="<option>"+subjects[i].subject+"</option>";
+                }
+                document.getElementById('selectid').innerHTML=temp;
+            }
+        }
+
+        function AddQues()
+        {
+            var Subject_Name = document.getElementById('selectid').value;
+            var Question = document.getElementById('question').value;
+            var Op1 = document.getElementById('option1').value;
+            var Op2 = document.getElementById('option2').value;
+            var Op3 = document.getElementById('option3').value;
+            var Op4 = document.getElementById('option4').value;
+            var Answer = document.getElementById('answer').value;
+
+            var QuestionDetails ={"selectid":Subject_Name,"question":Question,"option1":Op1,"option2":Op2,"option3":Op3,"option4":Op4,"answer":Answer};
+
+            if(localStorage.getItem("questions"))
+            {
+                var questions = JSON.parse(localStorage.getItem("questions"));
+                questions.push(QuestionDetails);
+                localStorage.setItem("questions",JSON.stringify(questions));
+            }
+            else
+            { 
+                var questions=[];
+                questions.push(QuestionDetails);
+                localStorage.setItem("questions",JSON.stringify(questions));
+            }
+            alert("Questions Added Successfully");
+            window.location.href=" ";
+            
+        }
+    </script>
+</body>
+</html>

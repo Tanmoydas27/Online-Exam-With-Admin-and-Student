@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>student-instruction-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-image: url("images/bg2.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #main-div{
+            clear: both;
+            width: 900px;
+        }
+        #div2{
+            width: 100%; 
+            margin-left: 40%;
+            background-color: #fff; 
+            padding: 45px 30px;
+        }
+
+    </style>
+</head>
+<body onload="FeatchStudent(); FeatchExam()">
+    <div>
+        <h1 style="color: White; width: 15%; margin-left: 20%;margin-top: 2%;">Online Exam</h1>
+    </div>
+    <!--Header  Start-->
+    <div style="width: 100%;margin-top: 5%;">
+        <nav class="navbar navbar-expand-lg bg-body-secondary navbar-brand">
+            <div style="width: 100%; margin-left: 40%;">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="#">Exam</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Header  End-->
+    <div id="main-div">
+        <div  id="div2">
+            <h2>Wellcome, <span id="studentname"></span></h2>
+            <br>
+            <h5 style="width: 30%; border: 0;"> Exam Subject Name: <span id="subject" style="background-color: #a1c8e4;color:rgb(12, 0, 0);"></span></h5>
+            <br>
+            <hr/>
+            <div>
+                <h3 style="font-size: 200%; color: #e40606;"><u><b>Instruction:-</b></u></h3>
+                <br>
+                <br>
+                <ol style="width: 100%; margin-left: 100px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+                    <li style="font-size: larger;">All Questions are Mandatory</li>
+                    <li style="font-size: larger;">Total Number of Question are <span id="noOfques"></span></li>
+                    <li style="font-size: larger;">Total Exam Time <span id="duration"></span> Minute</li>
+                    <li style="font-size: larger;">Each Question has 1 Marks</li>
+                    <li style="font-size: larger;">There are no negative marking</li>
+                </ol>
+            </div>
+            <br>
+            <br>
+            <br>
+            <form>
+                <div style="width: 100%; margin-left: 350px;">
+                    <Button id="startExamBtn" type="button" class="btn btn-danger" onclick="StartExam()">Start Exam</Button>
+                    <!-- <p style="color: red;">Exam Slot Available : <span id="slot"></span></p> -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--Footer Start-->
+    <footer class="bg-dark text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!--Footer End-->
+
+
+    <script>
+
+        var StartBtn = document.getElementById('startExamBtn').value;
+        var G_ExaminationDate ="";
+        var G_ExaminationSubject="";
+        var G_StudentRoll=0;
+        var G_StudentName="";
+        function FeatchStudent()
+        {
+            if(localStorage.getItem("examination"))
+            {
+                var examination =JSON.parse(localStorage.getItem("examination"));
+
+                var i=0;
+                var today= new Date();
+
+                for(i=0;i<examination.length;i++)
+                {
+                    var Examdate= new Date(examination[i].examDate);
+                    if(today.getDate() == Examdate.getDate())
+                    {
+                        G_ExaminationDate =examination[i].examDate;
+                        G_ExaminationSubject=examination[i].subject;
+                        G_StudentRoll = examination[i].rollno;
+                        G_StudentName = examination[i].student;
+                        document.getElementById('studentname').innerHTML=examination[i].student;
+                        document.getElementById('subject').innerHTML=examination[i].subject;
+                    }
+                }
+            }
+        }
+
+        function FeatchExam()
+        {
+            
+            if(localStorage.getItem("exams"))
+            {
+                var exams =JSON.parse(localStorage.getItem('exams'));
+                var i=0;
+                for(i=0;i<exams.length;i++)
+                {
+                    var Subject = exams[i].subject;
+                    if(exams[i].date == G_ExaminationDate  && Subject.toLowerCase() == G_ExaminationSubject.toLowerCase())
+                    {
+                        document.getElementById('noOfques').innerHTML=exams[i].noOfQuestions;
+                        document.getElementById('duration').innerHTML = exams[i].duration;
+                    }
+                }
+            }
+        }
+
+        function StartExam()
+        {
+            if(confirm("Are You Want To Start The Exam..?"))
+            {
+                var Count=0;
+                if(localStorage.getItem("examination"))
+                {
+                    var examination = JSON.parse(localStorage.getItem("examination"));
+                    var i=0;
+                    for(i=0;i<examination.length;i++)
+                    {
+                        if(examination[i].examDate == G_ExaminationDate && examination[i].rollno == G_StudentRoll && examination[i].subject == G_ExaminationSubject)
+                        {
+                            Count++;
+                            examination[i].StartCount = Count;
+                            examination[i].examDate = G_ExaminationDate;
+                            examination[i].rollno = G_StudentRoll;
+                            examination[i].student = G_StudentName;
+                            examination[i].subject = G_ExaminationSubject;
+                        }
+                    }
+                    localStorage.setItem("examination",JSON.stringify(examination));
+                }
+                window.location.href="student_exam.html";
+            }
+        }
+
+        function ExamExistOrNot()
+        {
+            if(localStorage.getItem("examination"))
+            {
+                var examination = JSON.parse(localStorage.getItem("examination"));
+                var i=0;
+
+                for(i=0;i<examination.length;i++)
+                {
+                
+                    if(examination[i].examDate == G_ExaminationDate && examination[i].rollno == G_StudentRoll && examination[i].subject == G_ExaminationSubject)
+                    {
+                        if(examination[i].StartCount == 0)
+                        {
+                            return 0;
+                        }
+                    }
+                }   
+            }
+            return 1;
+        }
+
+        // function BtnDisable()
+        // {
+
+        //     if(ExamExistOrNot() == 1)
+        //     {
+
+        //         document.getElementById('startExamBtn').disabled = true;
+        //         document.getElementById('slot').innerHTML= "0";
+        //     }
+        //     else if(ExamExistOrNot() == "0")
+        //     {
+        //         document.getElementById('startExamBtn').disabled = false;
+        //         document.getElementById('slot').innerHTML= "1";
+        //     }
+        // }
+    </script>
+</body>
+</html>
+
